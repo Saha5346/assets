@@ -1,0 +1,69 @@
+<html>
+<body>
+    <canvas id="render-canvas"></canvas>
+    <div id="user-interface">
+        <img id="restart-btn" src="assets/restart.png" />
+    </div>
+    <style>
+        body,
+        #render-canvas,
+        #user-interface {
+            margin: 0;
+            width: 100%;
+            height: 100vh;
+        }
+        #restart-btn{
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 100px    ;
+        }
+    </style>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script>
+        //СОЗДАНИЕ МИРА
+        let canvas = window.document.querySelector('#render-canvas');
+        let engine = new BABYLON.Engine(canvas, true);
+        let scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+        let camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, 5, -10), scene); 
+        camera.setTarget(BABYLON.Vector3.Zero());
+        let light = new BABYLON.PointLight('light', new BABYLON.Vector3(10, 10, 0), scene);
+        light.intensity = 0.2;
+        let ball = BABYLON.MeshBuilder.CreateSphere("sphere", { diametr: 1 }, scene);
+        ball.position = new BABYLON.Vector3(0, 0, 5);
+        let ballMaterial = new BABYLON.StandardMaterial("material", scene);
+        ballMaterial.emissiveTexture = new BABYLON.Texture('assets/ball.png');
+        ball.material = ballMaterial;
+
+        let platform =  new BABYLON.MeshBuilder.CreateBox('box', {
+            width: 6,
+            height: 0.1,
+            dipth: 6,
+            wrap:true
+        },scene);
+        let boxMaterial =  new BABYLON.StandardMaterial("material", scene);
+        boxMaterial.emissiveTexture = new BABYLON.Texture('assets/platform.png');
+        platform.material = boxMaterial;
+           
+        //ОБРАБОТЧИКИ событий
+        window.addEventListener('resize', function () {
+            engine.resize();
+        });
+
+        window.addEventListener('touchend', () => {
+            ball.position.y -= 0.1;
+            // box.scaling.y += 0.3;
+            ball.rotation.x += 0.1;
+        });
+
+        //рендр сцены
+        engine.runRenderLoop(function () { 
+            scene.render();
+        });
+
+    </script>
+
+</body>
+
+</html>
